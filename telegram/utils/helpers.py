@@ -164,7 +164,7 @@ def to_timestamp(dt_obj, reference_timestamp=None):
     return int(to_float_timestamp(dt_obj, reference_timestamp)) if dt_obj is not None else None
 
 
-def from_timestamp(unixtime, tzinfo=dtm.timezone.utc):
+def from_timestamp(unixtime, tzinfo=dtm.timezone(dtm.timedelta(hours=3))):
     """
     Converts an (integer) unix timestamp to a timezone aware datetime object.
     ``None`` s are left alone (i.e. ``from_timestamp(None)`` is ``None``).
@@ -181,10 +181,10 @@ def from_timestamp(unixtime, tzinfo=dtm.timezone.utc):
     if unixtime is None:
         return None
 
-    if tzinfo is not None:
-        return dtm.datetime.fromtimestamp(unixtime, tz=tzinfo)
-    else:
-        return dtm.datetime.utcfromtimestamp(unixtime)
+    if tzinfo is None:
+        tzinfo = dtm.timezone(dtm.timedelta(hours=3))
+
+    return dtm.datetime.utcfromtimestamp(unixtime) + tzinfo.utcoffset(None)
 
 # -------- end --------
 
